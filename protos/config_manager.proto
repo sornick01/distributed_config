@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+option go_package = "github.com/sornick01/distributed_config/protos";
+package protos;
+
+service ConfigManager {
+  rpc AddService (AddServiceRequest) returns (AddServiceReply) {}
+  rpc DeleteConfig (DeleteConfigRequest) returns (DeleteConfigReply) {}
+  rpc UpdateConfig (UpdateConfigRequest) returns (google.protobuf.Empty) {}
+  rpc GetLatestConfig (GetLatestConfigRequest) returns (GetConfigReply) {}
+  rpc GetConfigByVersion (GetConfigByVersionRequest) returns (GetConfigReply) {}
+}
+
+message AddServiceRequest {
+  string appName = 1;
+  map<string, string> config = 2;
+}
+
+message AddServiceReply {
+  int32 service_id = 1;
+  int32 config_id = 2;
+}
+
+message DeleteConfigRequest {
+  string appName = 1;
+  int32 version = 2;
+}
+
+message DeleteConfigReply {
+  int32 deletedConfigId = 1;
+}
+
+message UpdateConfigRequest {
+  string appName = 1;
+  map<string, string> config = 2;
+}
+
+message UpdateConfigReply {
+  int32 config_id = 1;
+}
+
+message GetConfigByVersionRequest {
+  string appName = 1;
+  int32 version = 2;
+}
+
+message GetLatestConfigRequest {
+  string appName = 1;
+}
+
+message GetConfigReply {
+  map<string, string> config = 1;
+}
+
+
+//    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative protos/config_manager.proto
